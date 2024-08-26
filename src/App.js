@@ -1,9 +1,11 @@
-import "./App.css";
+import Body from "./components/Body";
+import Header from "./components/Header";
 
 function App() {
   return (
-    <div className="App">
-      <div className="font-black text-center">Lets create an Webflix</div>
+    <div className="App flex items-center flex-col relative">
+      <Header></Header>
+      <Body></Body>
     </div>
   );
 }
