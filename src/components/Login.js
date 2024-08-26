@@ -1,27 +1,107 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { checkValidation } from "../utils/checkValidation";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isSignUpForm, setIsSignUpForm] = useState(false);
+  const [validError, setValidError] = useState(null);
   const toggleSignUp = () => {
     setIsSignUpForm(!isSignUpForm);
   };
+  const formEmail = useRef(null);
+  const formPassword = useRef(null);
+  const formFullName = useRef(null);
+
+  const formValidation = () => {
+    const errIs = checkValidation(
+      formEmail.current.value,
+      formPassword.current.value
+    );
+    const fireAuth = auth;
+    setValidError(errIs);
+
+    if (errIs) return;
+
+    if (isSignUpForm) {
+      createUserWithEmailAndPassword(
+        fireAuth,
+        formEmail.current.value,
+        formPassword.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: formFullName.current.value,
+          });
+        })
+        .then(() => {
+          const { uid, email, displayName } = fireAuth.currentUser;
+
+          dispatch(
+            addUser({ uid: uid, email: email, displayName: displayName })
+          );
+        })
+        .then(() => {
+          navigate("/");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setValidError(errorMessage);
+          // ..
+        });
+    }
+    if (!isSignUpForm) {
+      signInWithEmailAndPassword(
+        auth,
+        formEmail.current.value,
+        formPassword.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+
+          navigate("/browse");
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setValidError(errorCode + ":" + errorMessage);
+        });
+    }
+  };
   return (
-    <div>
-      Login
-      <div className="absolute bg-black top-[0] right-[0] z-[-1]">
+    <>
+      <div className="bg-black w-screen h-screen">
         <img
-          className="opacity-50"
+          className="opacity-50 object-cover w-full h-full"
           alt="background-banner"
           src="https://assets.nflxext.com/ffe/siteui/vlv3/36a4db5b-dec2-458a-a1c0-662fa60e7473/1115a02b-3062-4dcc-aae0-94028a0dcdff/IN-en-20240820-TRIFECTA-perspective_WEB_eeff8a6e-0384-4791-a703-31368aeac39f_large.jpg"
         />
       </div>
-      <div className="form bg-[rgba(0,_0,_0,_0.7)] rounded-[4px] flex flex-col gap-[28px] w-[450px] px-[68px] py-[48px]">
+      <div className="form bg-[rgba(0,_0,_0,_0.7)] rounded-[4px] flex flex-col gap-[28px] w-[450px] px-[68px] py-[48px] absolute top-2/4 -translate-y-1/2">
         <div className="text-[rgb(255,_255,_255)] text-[2rem] font-bold">
           {isSignUpForm ? "Sign Up" : "Sign In"}
         </div>
-        <form className="flex flex-col gap-[15px]">
+        <form
+          className="flex flex-col gap-[15px]"
+          onSubmit={(e) => e.preventDefault()}
+        >
           {isSignUpForm && (
             <input
+              ref={formFullName}
               type="text"
               placeholder="Full Name"
               className="w-full leading-normal pt-4 pr-4 pb-2 pl-4 bg-transparent border-[1px] border-[white] rounded-[5px] text-[white]"
@@ -29,22 +109,21 @@ const Login = () => {
           )}
           <input
             type="text"
-            placeholder="Email or Mobile Number"
+            ref={formEmail}
+            placeholder="Email"
             className="w-full leading-normal pt-4 pr-4 pb-2 pl-4 bg-transparent border-[1px] border-[white] rounded-[5px] text-[white]"
           />
           <input
+            ref={formPassword}
             type="password"
             placeholder="Password"
             className="w-full leading-normal pt-4 pr-4 pb-2 pl-4 bg-transparent border-[1px] border-[white] rounded-[5px] text-[white]"
           />
-          {isSignUpForm && (
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="w-full leading-normal pt-4 pr-4 pb-2 pl-4 bg-transparent border-[1px] border-[white] rounded-[5px] text-[white]"
-            />
-          )}
-          <button className="bg-[red] text-[white] p-[10px] font-bold rounded-[5px]">
+          {validError && <p className="text-[red] font-bold">{validError}</p>}
+          <button
+            className="bg-[red] text-[white] p-[10px] font-bold rounded-[5px]"
+            onClick={formValidation}
+          >
             {isSignUpForm ? "Sign Up" : "Sign In"}
           </button>
         </form>
@@ -54,7 +133,7 @@ const Login = () => {
             : "New To Webflix? SignUp Now"}
         </p>
       </div>
-    </div>
+    </>
   );
 };
 
