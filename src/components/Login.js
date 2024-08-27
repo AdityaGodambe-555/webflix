@@ -6,13 +6,12 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import Header from "./Header";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [isSignUpForm, setIsSignUpForm] = useState(false);
   const [validError, setValidError] = useState(null);
   const toggleSignUp = () => {
@@ -27,40 +26,45 @@ const Login = () => {
       formEmail.current.value,
       formPassword.current.value
     );
-    const fireAuth = auth;
+    // const fireAuth = auth;
     setValidError(errIs);
 
     if (errIs) return;
 
     if (isSignUpForm) {
       createUserWithEmailAndPassword(
-        fireAuth,
+        auth,
         formEmail.current.value,
         formPassword.current.value
       )
         .then((userCredential) => {
-          const user = userCredential.user;
-          updateProfile(user, {
+          // User has been created successfully
+          // console.log("User created successfully");
+
+          // Update the user profile
+          return updateProfile(userCredential.user, {
             displayName: formFullName.current.value,
           });
         })
         .then(() => {
-          const { uid, email, displayName } = fireAuth.currentUser;
+          // Profile updated successfully
+          const { uid, email, displayName } = auth.currentUser;
 
           dispatch(
             addUser({ uid: uid, email: email, displayName: displayName })
           );
-        })
-        .then(() => {
-          navigate("/");
+
+          // console.log("Profile updated successfully");
         })
         .catch((error) => {
+          // Handle errors here
           const errorCode = error.code;
           const errorMessage = error.message;
-          setValidError(errorMessage);
-          // ..
+          setValidError(errorCode + ": " + errorMessage);
+          console.error("Error:", errorMessage);
         });
     }
+
     if (!isSignUpForm) {
       signInWithEmailAndPassword(
         auth,
@@ -68,12 +72,7 @@ const Login = () => {
         formPassword.current.value
       )
         .then((userCredential) => {
-          // Signed in
           const user = userCredential.user;
-          console.log(user);
-
-          navigate("/browse");
-          // ...
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -84,6 +83,9 @@ const Login = () => {
   };
   return (
     <>
+      <div className="bg-transparent absolute z-[1]">
+        <Header></Header>
+      </div>
       <div className="bg-black w-screen h-screen">
         <img
           className="opacity-50 object-cover w-full h-full"
