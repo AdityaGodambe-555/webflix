@@ -33,14 +33,20 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="header flex justify-between mx-3 w-[80vw] h-16">
-      <div className="logo w-[9.25rem] h-10 text-[rgb(229,_9,_20)] text-[2.6rem] font-bold tracking-wide">
+    <div className="header flex md:justify-between mx-3 w-[80vw] h-16 flex-col md:flex-row gap-[12px] md:gap-0 items-end md:items-center">
+      <div className="logo text-[rgb(229,_9,_20)] text-[2.6rem] font-bold tracking-wide self-center">
         WEBFLIX
       </div>
       {user && (
-        <div className="flex items-center">Hii!, {user.displayName} </div>
+        <div className="flex items-center text-white">
+          Hii, {user.displayName}{" "}
+        </div>
       )}
-      {user && <button onClick={userSignOut}>Sign Out</button>}
+      {user && (
+        <button onClick={userSignOut} className="text-white w-[fit-content]">
+          Sign Out
+        </button>
+      )}
     </div>
   );
 };
