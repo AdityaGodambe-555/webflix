@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TMDB_API, TMDB_API_OPTIONS } from "../utils/constants";
 import {
   addNowPlayingMovies,
@@ -9,6 +9,9 @@ import { useEffect } from "react";
 
 const useNowPlayingMovies = () => {
   const dispatch = useDispatch();
+  const nowPlayingMovies = useSelector(
+    (store) => store.movies.nowPlayingMovies
+  );
   let nowPlayingMoviesData = null;
   const getNowPlayingMovies = async () => {
     const data = await fetch(TMDB_API, TMDB_API_OPTIONS);
@@ -17,7 +20,9 @@ const useNowPlayingMovies = () => {
     // console.log(json.results);
     dispatch(addNowPlayingMovies(nowPlayingMoviesData));
 
-    const videoMovie = await nowPlayingMoviesData[0];
+    const randomNumber = Math.floor(Math.random() * 6);
+
+    const videoMovie = await nowPlayingMoviesData[randomNumber];
     // console.log(videoMovie.id);
     dispatch(addvideoMovie(videoMovie));
     const videoMovieId = await videoMovie.id;
@@ -41,7 +46,7 @@ const useNowPlayingMovies = () => {
   useEffect(() => {
     // if (nowPlayingMoviesData !== null) {
     // }
-    getNowPlayingMovies();
+    !nowPlayingMovies && getNowPlayingMovies();
   }, []);
 };
 

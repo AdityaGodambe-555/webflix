@@ -9,6 +9,7 @@ import { auth } from "../utils/firebase";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import Header from "./Header";
+import { BG_URL } from "../utils/constants";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -90,7 +91,7 @@ const Login = () => {
         <img
           className="opacity-50 object-cover w-full h-full"
           alt="background-banner"
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/36a4db5b-dec2-458a-a1c0-662fa60e7473/1115a02b-3062-4dcc-aae0-94028a0dcdff/IN-en-20240820-TRIFECTA-perspective_WEB_eeff8a6e-0384-4791-a703-31368aeac39f_large.jpg"
+          src={BG_URL}
         />
       </div>
       <div className="form bg-[rgba(0,_0,_0,_0.7)] rounded-[4px] flex flex-col gap-[28px] w-[450px] px-[68px] py-[48px] absolute top-2/4 -translate-y-1/2">

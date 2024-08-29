@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const VideoBackground = () => {
-  // useVideoKey();
   const movieVideoYtKey = useSelector((store) => store.movies.videoMovieYtKey);
   // console.log(movieVideoYtKey);
 
@@ -19,7 +18,7 @@ const VideoBackground = () => {
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       ></iframe>
-      <div className="overlay absolute top-[0] left-[0] w-screen h-[44rem] bg-transparent"></div>
+      <div className="overlay absolute top-[0] left-[0] w-screen h-[44rem] bg-transparent bg-[linear-gradient(0deg,_rgba(0,0,0,0)_85%,_rgba(0,0,0,1)_100%)]"></div>
     </div>
   );
 };
