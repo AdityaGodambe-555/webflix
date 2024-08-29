@@ -1,15 +1,26 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addModalMovie, toggleModalState } from "../utils/moviesSlice";
+// import MovieDetailModal from "./MovieDetailModal";
 
 const VideoTitle = () => {
+  const dispatch = useDispatch();
   const videoMovieData = useSelector((store) => store.movies.videoMovie);
+  // const modalState = useSelector((store) => store.movies.toggleModalState);
+  // console.log(modalState);
+
   // console.log(videoMovieData);
+  const handelMovieModal = () => {
+    dispatch(addModalMovie(videoMovieData));
+    dispatch(toggleModalState());
+  };
   return (
-    <div className="absolute bottom-[15rem] left-4 md:left-[5rem] w-[344px] md:w-[30rem] flex flex-col gap-4 text-white">
-      <div className="text-[xx-large] font-bold">{videoMovieData?.title}</div>
-      <div className="text-[smaller]">{videoMovieData?.overview}</div>
-      <div className="flex gap-2">
-        <div className="flex gap-4 bg-[white] px-[20px] py-[10px] rounded-[5px] hover:opacity-[0.5] cursor-pointer">
+    <>
+      <div className="absolute bottom-[15rem] left-4 md:left-[5rem] w-[344px] md:w-[30rem] flex flex-col gap-4 text-white">
+        <div className="text-[xx-large] font-bold">{videoMovieData?.title}</div>
+        <div className="text-[smaller]">{videoMovieData?.overview}</div>
+        <div className="flex gap-2">
+          {/* <div className="flex gap-4 bg-[white] px-[20px] py-[10px] rounded-[5px] hover:opacity-[0.5] cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -26,9 +37,44 @@ const VideoTitle = () => {
             />
           </svg>
           <span className="text-black">Play</span>
+        </div> */}
+          <div
+            className="flex gap-4 bg-[#6d6d6d] px-[20px] py-[10px] rounded-[5px] hover:opacity-[0.5] cursor-pointer"
+            onClick={handelMovieModal}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width={24}
+              height={24}
+              color={"white"}
+              fill={"#6d6d6d"}
+            >
+              <path
+                d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path
+                d="M12.2422 17V12C12.2422 11.5286 12.2422 11.2929 12.0957 11.1464C11.9493 11 11.7136 11 11.2422 11"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M11.992 8H12.001"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>More Info</span>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

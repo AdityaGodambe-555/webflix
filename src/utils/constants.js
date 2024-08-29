@@ -13,6 +13,8 @@ export const TMDB_API = "https://api.themoviedb.org/3/movie/now_playing?page=1";
 
 export const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
+export const TMDB_MOVIE_DETAILS_API = "https://api.themoviedb.org/3/movie/";
+
 export const SUPPORTED_LANGUAGE = [
   { identifier: "eng", lang: "English" },
   { identifier: "marathi", lang: "Marathi" },

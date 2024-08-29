@@ -10,9 +10,11 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import Header from "./Header";
 import { BG_URL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isSignUpForm, setIsSignUpForm] = useState(false);
   const [validError, setValidError] = useState(null);
   const toggleSignUp = () => {
@@ -56,6 +58,7 @@ const Login = () => {
           );
 
           // console.log("Profile updated successfully");
+          navigate("/");
         })
         .catch((error) => {
           // Handle errors here
@@ -74,6 +77,7 @@ const Login = () => {
       )
         .then((userCredential) => {
           const user = userCredential.user;
+          navigate("/");
         })
         .catch((error) => {
           const errorCode = error.code;

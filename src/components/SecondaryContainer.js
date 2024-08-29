@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import usePopularMovies from "../hooks/usePopularMovies";
 import useTopRatedMovies from "../hooks/useTopRatedMovies";
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
+import ScrollInfinite from "./ScrollInfinite";
 
 const SecondaryContainer = () => {
   usePopularMovies();
@@ -30,7 +31,7 @@ const SecondaryContainer = () => {
           <div className="text-white font-bold text-2xl p-3">
             Popular Movies
           </div>
-          <MoviesList moviesList={movies.popularMovies} />
+          <ScrollInfinite movies={movies.popularMovies} />
         </div>
       </div>
     </div>

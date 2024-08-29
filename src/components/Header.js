@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+// import React, { useEffect, useRef } from "react";
 import { auth } from "../utils/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addUser, removeUser } from "../utils/userSlice";
+import { toggleModalState } from "../utils/moviesSlice";
+// import { addUser, removeUser } from "../utils/userSlice";
 // import { toggleGpt } from "../utils/gptSlice";
 // import { SUPPORTED_LANGUAGE } from "../utils/constants";
 // import { changeTheLanguage } from "../utils/configSlice";
@@ -13,15 +14,23 @@ const Header = () => {
   const dispatch = useDispatch();
   // const language = useRef(null);
   const user = useSelector((store) => store.user);
+  const modalState = useSelector((store) => store.movies.toggleModalState);
+
+  const urlPath = useLocation();
+  // console.log(urlPath.pathname);
+
   // const gptToggle = useSelector((store) => store.gpt.gptToggle);
   // const handelGptToggle = () => {
   //   dispatch(toggleGpt());
   // };
   const userSignOut = () => {
+    if (modalState === true) {
+      dispatch(toggleModalState());
+    }
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        // navigate("/");
+        navigate("/login");
       })
       .catch((error) => {
         // An error happened.
@@ -31,18 +40,18 @@ const Header = () => {
   //   // console.log(language.current.value);
   //   dispatch(changeTheLanguage(language.current.value));
   // };
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const { uid, email, displayName } = user;
-        dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
-        navigate("/browse");
-      } else {
-        dispatch(removeUser());
-        navigate("/");
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       const { uid, email, displayName } = user;
+  //       dispatch(addUser({ uid: uid, email: email, displayName: displayName }));
+  //       navigate("/browse");
+  //     } else {
+  //       dispatch(removeUser());
+  //       navigate("/");
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div className="header flex md:justify-between mx-3 w-[90vw] h-16 flex-col md:flex-row gap-[12px] md:gap-0 items-end md:items-center">
@@ -146,12 +155,28 @@ const Header = () => {
             </select>
           </div>
         )} */}
+        {urlPath.pathname !== "/" && (
+          <button
+            onClick={() => navigate("/")}
+            className="text-red-600 w-[fit-content] font-bold text-lg rounded-full border-[1px] border-[white] px-[10px] py-[3px]"
+          >
+            Home
+          </button>
+        )}
         {user && (
           <button
             onClick={userSignOut}
             className="text-red-600 w-[fit-content] font-bold text-lg rounded-full border-[1px] border-[white] px-[10px] py-[3px]"
           >
             Sign Out
+          </button>
+        )}
+        {urlPath.pathname !== "/login" && !user && (
+          <button
+            onClick={userSignOut}
+            className="text-red-600 w-[fit-content] font-bold text-lg rounded-full border-[1px] border-[white] px-[10px] py-[3px]"
+          >
+            Sign In / Sign Up
           </button>
         )}
       </div>
