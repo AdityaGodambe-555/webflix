@@ -25,6 +25,9 @@ const moviesSlice = createSlice({
     addPopularMovies: (state, action) => {
       state.popularMovies = action.payload;
     },
+    appendPopularMovies: (state, action) => {
+      state.popularMovies = [...state.popularMovies, ...action.payload];
+    },
     addTopRatedMovies: (state, action) => {
       state.topRatedMovies = action.payload;
     },
@@ -48,6 +51,7 @@ export const {
   addvideoMovie,
   addVideoMovieYtKey,
   addPopularMovies,
+  appendPopularMovies,
   addTopRatedMovies,
   addUpcomingMovies,
   addModalMovie,
